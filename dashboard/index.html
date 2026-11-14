@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — which pre-token protocols would be worth the most</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="brand">
+    <span class="radar-dot" aria-hidden="true"></span>
+    <div>
+      <h1>Token Radar</h1>
+      <p class="tagline">Protocols that record no token, ranked by what a launch would be worth — and how to farm each one.</p>
+    </div>
+  </div>
+  <p class="snapshot-line" id="snapshot-line">Loading the snapshot…</p>
+</header>
+
+<main>
+  <section class="stats" id="stats" aria-label="Board totals"></section>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button id="tab-board" role="tab" aria-selected="true">Pre-token board</button>
+    <button id="tab-live" role="tab" aria-selected="false">Live tokens</button>
+    <button id="tab-method" role="tab" aria-selected="false">How the radar works</button>
+  </nav>
+
+  <section id="view-board" role="tabpanel" aria-labelledby="tab-board">
+    <div class="controls">
+      <label>Search <input id="q" type="search" placeholder="name or slug…" autocomplete="off"></label>
+      <label>Category
+        <select id="category"><option value="">All categories</option></select>
+      </label>
+      <label>Chain
+        <select id="chain"><option value="">All chains</option></select>
+      </label>
+      <label class="check"><input id="watchlist-only" type="checkbox"> Watchlist only</label>
+      <label>Sort
+        <select id="sort">
+          <option value="implied">Implied value ↓</option>
+          <option value="tvl">TVL ↓</option>
+          <option value="growth">7d growth ↓</option>
+          <option value="age">Age ↓</option>
+        </select>
+      </label>
+      <span class="count" id="count"></span>
+    </div>
+
+    <div id="detail" class="detail" hidden></div>
+
+    <table class="board">
+      <thead>
+        <tr>
+          <th data-sort="rank">#</th>
+          <th data-sort="name">Protocol</th>
+          <th data-sort="category">Category</th>
+          <th data-sort="tvl">TVL</th>
+          <th data-sort="growth">7d</th>
+          <th data-sort="age">Age</th>
+          <th data-sort="implied">Implied value</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="hint">Click a row for its detail view and farm plan. Click a column header to sort.</p>
+  </section>
+
+  <section id="view-live" role="tabpanel" aria-labelledby="tab-live" hidden>
+    <p class="note">These protocols already trade. They are shown at the market's own value — never mixed into the ranked board — and they are the comparables the board is priced from.</p>
+    <table class="board live-table">
+      <thead>
+        <tr><th>Protocol</th><th>Category</th><th>TVL</th><th>Market cap</th><th>MCap / TVL</th></tr>
+      </thead>
+      <tbody id="live-rows"></tbody>
+    </table>
+  </section>
+
+  <section id="view-method" role="tabpanel" aria-labelledby="tab-method" hidden>
+    <h2>How the radar works</h2>
+    <p>The board asks one question: <strong>if a protocol that records no token issued one tomorrow and its record stayed as it is, what would that token be worth?</strong> It never predicts whether or when a token is issued. Every number comes from the snapshot's own figures.</p>
+    <h3>The five steps</h3>
+    <ol class="steps">
+      <li><strong>Pre-token test.</strong> A protocol is pre-token when its market cap, its CoinGecko id and its symbol are all null. The page says a protocol “records no token”, never that it has none — the record is not proof.</li>
+      <li><strong>Category ratio.</strong> For each category with at least four live-token protocols, the ratio is the median of their market-cap-over-TVL ratios. Any other category falls back to the global median across all live-token protocols. Ratios are clamped to 0.05–1.00 so one outlier cannot set a category's price.</li>
+      <li><strong>Base value.</strong> TVL × the category ratio.</li>
+      <li><strong>Growth.</strong> The seven-day TVL change, clamped to −50%…+100%, moves the base by 60% of its size. Unreported growth counts as zero.</li>
+      <li><strong>Maturity and reach.</strong> A protocol that has run longer counts for more, from 0.70× for a newborn to 1.00× at three years; each extra chain up to nine adds 1%. A protocol with no listing date is treated as one year old.</li>
+    </ol>
+    <h3>Comparables</h3>
+    <p>These ratios are computed from this snapshot, not typed in by hand. Categories with fewer than four live-token protocols fall back to the global median.</p>
+    <table class="board comp-table">
+      <thead><tr><th>Category</th><th>Ratio</th><th>Live protocols</th></tr></thead>
+      <tbody id="comp-rows"></tbody>
+    </table>
+    <p id="fallback-line"></p>
+    <h3>What the board holds</h3>
+    <p id="coverage-line"></p>
+    <p>Protocols above the floor that the watchlist leaves out are not ranked: they are arms of a larger protocol, not launches of their own. The 24 live-token protocols with the largest market caps sit apart in the Live tokens tab, at the market's own value.</p>
+    <h3>Farm plans</h3>
+    <p>Every row carries six steps with a cost and a time, derived from the protocol's own category, chains, TVL and age. Nothing in a plan promises a token, an airdrop or a payout — the steps are how to use the protocol like a real user, so that if it ever rewards users, the activity is there.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Implied values are this entry's own claim, from the snapshot's figures and the model above — never a price, and never a promise that a token will launch.</p>
+  <p id="source-line"></p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
